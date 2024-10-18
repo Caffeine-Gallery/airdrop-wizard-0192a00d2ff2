@@ -1,0 +1,7 @@
+service : {
+  airdrop: (vec principal, nat) -> (text);
+  balanceOf: (principal) -> (nat) query;
+  getSymbol: () -> (text) query;
+  mint: (nat) -> (text);
+  transfer: (principal, nat) -> (text);
+}
