@@ -1,69 +1,100 @@
 import { backend } from 'declarations/backend';
+import { AuthClient } from "@dfinity/auth-client";
 import { Principal } from '@dfinity/principal';
 
-let principal;
+let authClient;
+let userPrincipal;
+
+async function init() {
+    authClient = await AuthClient.create();
+    if (await authClient.isAuthenticated()) {
+        handleAuthenticated();
+    }
+}
+
+async function login() {
+    authClient.login({
+        identityProvider: "https://identity.ic0.app/#authorize",
+        onSuccess: handleAuthenticated,
+    });
+}
+
+async function handleAuthenticated() {
+    userPrincipal = authClient.getIdentity().getPrincipal();
+    document.getElementById('principalId').textContent = userPrincipal.toText();
+    document.getElementById('loginButton').style.display = 'none';
+    await updateTokenInfo();
+    await updateBalance();
+}
+
+async function updateTokenInfo() {
+    const name = await backend.icrc1_name();
+    const symbol = await backend.icrc1_symbol();
+    const decimals = await backend.icrc1_decimals();
+    const fee = await backend.icrc1_fee();
+    const totalSupply = await backend.icrc1_total_supply();
+
+    document.getElementById('tokenName').textContent = name;
+    document.getElementById('tokenSymbol').textContent = symbol;
+    document.getElementById('tokenDecimals').textContent = decimals.toString();
+    document.getElementById('tokenFee').textContent = fee.toString();
+    document.getElementById('tokenTotalSupply').textContent = totalSupply.toString();
+}
 
 async function updateBalance() {
-    const balance = await backend.balanceOf(principal);
+    if (!userPrincipal) return;
+    const balance = await backend.icrc1_balance_of({ owner: userPrincipal, subaccount: [] });
     document.getElementById('balanceAmount').textContent = balance.toString();
 }
 
-async function updateSymbol() {
-    const symbol = await backend.getSymbol();
-    document.getElementById('tokenSymbol').textContent = symbol;
-}
-
-document.getElementById('mintButton').addEventListener('click', async () => {
-    const amount = parseInt(document.getElementById('mintAmount').value);
-    if (isNaN(amount) || amount <= 0) {
-        alert('Please enter a valid amount');
-        return;
-    }
-    try {
-        const result = await backend.mint(amount);
-        document.getElementById('status').textContent = result;
-        updateBalance();
-    } catch (error) {
-        document.getElementById('status').textContent = `Error: ${error.message}`;
-    }
-});
-
-document.getElementById('airdropButton').addEventListener('click', async () => {
-    const recipients = document.getElementById('recipients').value.split('\n').map(p => Principal.fromText(p.trim()));
-    const amount = parseInt(document.getElementById('airdropAmount').value);
-    if (recipients.length === 0 || isNaN(amount) || amount <= 0) {
-        alert('Please enter valid recipients and amount');
-        return;
-    }
-    try {
-        const result = await backend.airdrop(recipients, amount);
-        document.getElementById('status').textContent = result;
-        updateBalance();
-    } catch (error) {
-        document.getElementById('status').textContent = `Error: ${error.message}`;
-    }
-});
+document.getElementById('loginButton').addEventListener('click', login);
 
 document.getElementById('transferButton').addEventListener('click', async () => {
     const to = Principal.fromText(document.getElementById('transferTo').value.trim());
-    const amount = parseInt(document.getElementById('transferAmount').value);
-    if (!to || isNaN(amount) || amount <= 0) {
+    const amount = BigInt(document.getElementById('transferAmount').value);
+    if (!to || amount <= 0) {
         alert('Please enter a valid recipient and amount');
         return;
     }
     try {
-        const result = await backend.transfer(to, amount);
-        document.getElementById('status').textContent = result;
-        updateBalance();
+        const result = await backend.icrc1_transfer({
+            from_subaccount: [],
+            to: { owner: to, subaccount: [] },
+            amount: amount,
+            fee: [],
+            memo: [],
+            created_at_time: []
+        });
+        if ('Ok' in result) {
+            document.getElementById('status').textContent = `Transfer successful`;
+        } else {
+            document.getElementById('status').textContent = `Transfer failed: ${result.Err}`;
+        }
+        await updateBalance();
     } catch (error) {
         document.getElementById('status').textContent = `Error: ${error.message}`;
     }
 });
 
-window.addEventListener('load', async () => {
-    // For simplicity, we're using a hardcoded principal here.
-    // In a real application, you would use authentication to get the user's principal.
-    principal = Principal.fromText("aaaaa-aa");
-    await updateBalance();
-    await updateSymbol();
+document.getElementById('mintButton').addEventListener('click', async () => {
+    const to = Principal.fromText(document.getElementById('mintTo').value.trim());
+    const amount = BigInt(document.getElementById('mintAmount').value);
+    if (!to || amount <= 0) {
+        alert('Please enter a valid recipient and amount');
+        return;
+    }
+    try {
+        const result = await backend.mint({ owner: to, subaccount: [] }, amount);
+        if ('Ok' in result) {
+            document.getElementById('status').textContent = `Minting successful`;
+        } else {
+            document.getElementById('status').textContent = `Minting failed: ${result.Err}`;
+        }
+        await updateBalance();
+        await updateTokenInfo();
+    } catch (error) {
+        document.getElementById('status').textContent = `Error: ${error.message}`;
+    }
 });
+
+window.addEventListener('load', init);

@@ -15,7 +15,7 @@ h1, h2 {
     color: #333;
 }
 
-input, textarea, button {
+input, button {
     display: block;
     width: 100%;
     margin-bottom: 10px;
@@ -38,5 +38,12 @@ button:hover {
     margin-top: 20px;
     padding: 10px;
     background-color: #ddd;
+    border-radius: 5px;
+}
+
+#tokenInfo, #balance, #transfer, #mint {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #fff;
     border-radius: 5px;
 }

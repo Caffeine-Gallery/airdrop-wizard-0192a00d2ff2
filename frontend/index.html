@@ -3,31 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Token Minting and Airdrop</title>
+    <title>ICRC-1 Token Interface</title>
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
     <div id="app">
-        <h1>Token Minting and Airdrop</h1>
+        <h1>ICRC-1 Token Interface</h1>
+        <div id="auth">
+            <button id="loginButton">Login</button>
+            <p id="principalId"></p>
+        </div>
+        <div id="tokenInfo">
+            <h2>Token Info</h2>
+            <p>Name: <span id="tokenName"></span></p>
+            <p>Symbol: <span id="tokenSymbol"></span></p>
+            <p>Decimals: <span id="tokenDecimals"></span></p>
+            <p>Fee: <span id="tokenFee"></span></p>
+            <p>Total Supply: <span id="tokenTotalSupply"></span></p>
+        </div>
         <div id="balance">
-            <h2>Your Balance: <span id="balanceAmount">0</span> <span id="tokenSymbol"></span></h2>
-        </div>
-        <div id="mint">
-            <h2>Mint Tokens</h2>
-            <input type="number" id="mintAmount" placeholder="Amount to mint">
-            <button id="mintButton">Mint</button>
-        </div>
-        <div id="airdrop">
-            <h2>Airdrop Tokens</h2>
-            <textarea id="recipients" placeholder="Enter recipient principals, one per line"></textarea>
-            <input type="number" id="airdropAmount" placeholder="Amount per recipient">
-            <button id="airdropButton">Airdrop</button>
+            <h2>Your Balance: <span id="balanceAmount">0</span></h2>
         </div>
         <div id="transfer">
             <h2>Transfer Tokens</h2>
             <input type="text" id="transferTo" placeholder="Recipient principal">
             <input type="number" id="transferAmount" placeholder="Amount to transfer">
             <button id="transferButton">Transfer</button>
+        </div>
+        <div id="mint">
+            <h2>Mint Tokens (Owner Only)</h2>
+            <input type="text" id="mintTo" placeholder="Recipient principal">
+            <input type="number" id="mintAmount" placeholder="Amount to mint">
+            <button id="mintButton">Mint</button>
         </div>
         <div id="status"></div>
     </div>
