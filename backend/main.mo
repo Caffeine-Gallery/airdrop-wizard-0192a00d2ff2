@@ -85,6 +85,10 @@ actor Token {
         Debug.print("Caller: " # debug_show(caller));
         Debug.print("Is caller owner? " # debug_show(Principal.equal(caller, owner_)));
 
+        if (Principal.notEqual(caller, owner_)) {
+            return #err("Only the owner can mint tokens");
+        };
+
         let toBalance = _balanceOf(to);
         balances.put(to, toBalance + amount);
         totalSupply_ += amount;
@@ -115,5 +119,14 @@ actor Token {
     // New function to check if a principal is the owner
     public shared({ caller }) func isOwner() : async Bool {
         Principal.equal(caller, owner_)
+    };
+
+    // New function to set the owner
+    public shared({ caller }) func setOwner(newOwner : Principal) : async Text {
+        if (Principal.notEqual(caller, owner_)) {
+            return "Only the current owner can set a new owner";
+        };
+        owner_ := newOwner;
+        "Owner successfully changed to " # Principal.toText(newOwner)
     };
 };

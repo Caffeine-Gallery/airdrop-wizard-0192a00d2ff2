@@ -28,4 +28,5 @@ service : {
   icrc1_transfer: (TransferArgs) -> (TransferResult);
   isOwner: () -> (bool);
   mint: (Account, nat) -> (TransferResult);
+  setOwner: (principal) -> (text);
 }

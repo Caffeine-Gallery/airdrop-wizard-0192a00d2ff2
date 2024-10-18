@@ -11,8 +11,10 @@
         <h1>ICRC-1 Token Interface</h1>
         <div id="auth">
             <button id="loginButton">Login</button>
-            <p>Your Principal ID: <span id="principalId"></span></p>
-            <p>Is Owner: <span id="isOwner"></span></p>
+            <div id="loggedInControls" style="display: none;">
+                <p>Your Principal ID: <span id="principalId"></span></p>
+                <p>Is Owner: <span id="isOwner"></span></p>
+            </div>
         </div>
         <div id="tokenInfo">
             <h2>Token Info</h2>
@@ -32,10 +34,15 @@
             <button id="transferButton">Transfer</button>
         </div>
         <div id="mint">
-            <h2>Mint Tokens</h2>
+            <h2>Mint Tokens (Owner Only)</h2>
             <input type="text" id="mintTo" placeholder="Recipient principal">
             <input type="number" id="mintAmount" placeholder="Amount to mint">
             <button id="mintButton">Mint</button>
+        </div>
+        <div id="setOwnerControls" style="display: none;">
+            <h2>Set New Owner (Current Owner Only)</h2>
+            <input type="text" id="newOwner" placeholder="New owner principal">
+            <button id="setOwnerButton">Set New Owner</button>
         </div>
         <div id="status"></div>
     </div>

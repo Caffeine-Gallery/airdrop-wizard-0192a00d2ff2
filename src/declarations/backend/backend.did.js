@@ -23,6 +23,7 @@ export const idlFactory = ({ IDL }) => {
     'icrc1_transfer' : IDL.Func([TransferArgs], [TransferResult], []),
     'isOwner' : IDL.Func([], [IDL.Bool], []),
     'mint' : IDL.Func([Account, IDL.Nat], [TransferResult], []),
+    'setOwner' : IDL.Func([IDL.Principal], [IDL.Text], []),
   });
 };
 export const init = ({ IDL }) => { return []; };

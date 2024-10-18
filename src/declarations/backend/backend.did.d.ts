@@ -27,6 +27,7 @@ export interface _SERVICE {
   'icrc1_transfer' : ActorMethod<[TransferArgs], TransferResult>,
   'isOwner' : ActorMethod<[], boolean>,
   'mint' : ActorMethod<[Account, bigint], TransferResult>,
+  'setOwner' : ActorMethod<[Principal], string>,
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

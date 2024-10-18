@@ -23,6 +23,7 @@ async function handleAuthenticated() {
     userPrincipal = authClient.getIdentity().getPrincipal();
     document.getElementById('principalId').textContent = userPrincipal.toText();
     document.getElementById('loginButton').style.display = 'none';
+    document.getElementById('loggedInControls').style.display = 'block';
     await updateTokenInfo();
     await updateBalance();
     await checkOwner();
@@ -51,6 +52,7 @@ async function updateBalance() {
 async function checkOwner() {
     const isOwner = await backend.isOwner();
     document.getElementById('isOwner').textContent = isOwner ? 'Yes' : 'No';
+    document.getElementById('setOwnerControls').style.display = isOwner ? 'block' : 'none';
 }
 
 document.getElementById('loginButton').addEventListener('click', login);
@@ -102,6 +104,21 @@ document.getElementById('mintButton').addEventListener('click', async () => {
         await updateTokenInfo();
     } catch (error) {
         console.error('Minting error:', error);
+        document.getElementById('status').textContent = `Error: ${error.message}`;
+    }
+});
+
+document.getElementById('setOwnerButton').addEventListener('click', async () => {
+    const newOwner = Principal.fromText(document.getElementById('newOwner').value.trim());
+    if (!newOwner) {
+        alert('Please enter a valid principal for the new owner');
+        return;
+    }
+    try {
+        const result = await backend.setOwner(newOwner);
+        document.getElementById('status').textContent = result;
+        await checkOwner();
+    } catch (error) {
         document.getElementById('status').textContent = `Error: ${error.message}`;
     }
 });
