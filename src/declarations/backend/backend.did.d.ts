@@ -17,6 +17,7 @@ export interface TransferArgs {
 export type TransferResult = { 'ok' : bigint } |
   { 'err' : string };
 export interface _SERVICE {
+  'getOwner' : ActorMethod<[], Principal>,
   'icrc1_balance_of' : ActorMethod<[Account], bigint>,
   'icrc1_decimals' : ActorMethod<[], number>,
   'icrc1_fee' : ActorMethod<[], bigint>,
@@ -24,6 +25,7 @@ export interface _SERVICE {
   'icrc1_symbol' : ActorMethod<[], string>,
   'icrc1_total_supply' : ActorMethod<[], bigint>,
   'icrc1_transfer' : ActorMethod<[TransferArgs], TransferResult>,
+  'isOwner' : ActorMethod<[], boolean>,
   'mint' : ActorMethod<[Account, bigint], TransferResult>,
 }
 export declare const idlFactory: IDL.InterfaceFactory;

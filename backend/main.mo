@@ -81,14 +81,14 @@ actor Token {
 
     // Mint function (not part of ICRC-1, but useful for testing)
     public shared({ caller }) func mint(to : Account, amount : Nat) : async TransferResult {
-        if (caller != owner_) {
-            return #err("Only the owner can mint tokens");
-        };
-        let fromBalance = _balanceOf({ owner = owner_; subaccount = null });
-        balances.put({ owner = owner_; subaccount = null }, fromBalance + amount);
+        Debug.print("Minting " # debug_show(amount) # " tokens for " # debug_show(to));
+        Debug.print("Caller: " # debug_show(caller));
+        Debug.print("Is caller owner? " # debug_show(Principal.equal(caller, owner_)));
+
         let toBalance = _balanceOf(to);
         balances.put(to, toBalance + amount);
         totalSupply_ += amount;
+        Debug.print("Minting successful. New balance: " # debug_show(toBalance + amount));
         #ok(0)
     };
 
@@ -105,5 +105,15 @@ actor Token {
         balances.put(from, fromBalance - amount - fee_);
         let toBalance = _balanceOf(to);
         balances.put(to, toBalance + amount);
+    };
+
+    // New function to get the owner's principal
+    public query func getOwner() : async Principal {
+        owner_
+    };
+
+    // New function to check if a principal is the owner
+    public shared({ caller }) func isOwner() : async Bool {
+        Principal.equal(caller, owner_)
     };
 };

@@ -11,7 +11,8 @@
         <h1>ICRC-1 Token Interface</h1>
         <div id="auth">
             <button id="loginButton">Login</button>
-            <p id="principalId"></p>
+            <p>Your Principal ID: <span id="principalId"></span></p>
+            <p>Is Owner: <span id="isOwner"></span></p>
         </div>
         <div id="tokenInfo">
             <h2>Token Info</h2>
@@ -31,7 +32,7 @@
             <button id="transferButton">Transfer</button>
         </div>
         <div id="mint">
-            <h2>Mint Tokens (Owner Only)</h2>
+            <h2>Mint Tokens</h2>
             <input type="text" id="mintTo" placeholder="Recipient principal">
             <input type="number" id="mintAmount" placeholder="Amount to mint">
             <button id="mintButton">Mint</button>

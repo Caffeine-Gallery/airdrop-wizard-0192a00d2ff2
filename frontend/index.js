@@ -25,6 +25,7 @@ async function handleAuthenticated() {
     document.getElementById('loginButton').style.display = 'none';
     await updateTokenInfo();
     await updateBalance();
+    await checkOwner();
 }
 
 async function updateTokenInfo() {
@@ -45,6 +46,11 @@ async function updateBalance() {
     if (!userPrincipal) return;
     const balance = await backend.icrc1_balance_of({ owner: userPrincipal, subaccount: [] });
     document.getElementById('balanceAmount').textContent = balance.toString();
+}
+
+async function checkOwner() {
+    const isOwner = await backend.isOwner();
+    document.getElementById('isOwner').textContent = isOwner ? 'Yes' : 'No';
 }
 
 document.getElementById('loginButton').addEventListener('click', login);
@@ -84,7 +90,9 @@ document.getElementById('mintButton').addEventListener('click', async () => {
         return;
     }
     try {
+        console.log(`Attempting to mint ${amount} tokens for ${to.toText()}`);
         const result = await backend.mint({ owner: to, subaccount: [] }, amount);
+        console.log('Mint result:', result);
         if ('Ok' in result) {
             document.getElementById('status').textContent = `Minting successful`;
         } else {
@@ -93,6 +101,7 @@ document.getElementById('mintButton').addEventListener('click', async () => {
         await updateBalance();
         await updateTokenInfo();
     } catch (error) {
+        console.error('Minting error:', error);
         document.getElementById('status').textContent = `Error: ${error.message}`;
     }
 });

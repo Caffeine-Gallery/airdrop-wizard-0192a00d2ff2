@@ -13,6 +13,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const TransferResult = IDL.Variant({ 'ok' : IDL.Nat, 'err' : IDL.Text });
   return IDL.Service({
+    'getOwner' : IDL.Func([], [IDL.Principal], ['query']),
     'icrc1_balance_of' : IDL.Func([Account], [IDL.Nat], ['query']),
     'icrc1_decimals' : IDL.Func([], [IDL.Nat8], ['query']),
     'icrc1_fee' : IDL.Func([], [IDL.Nat], ['query']),
@@ -20,6 +21,7 @@ export const idlFactory = ({ IDL }) => {
     'icrc1_symbol' : IDL.Func([], [IDL.Text], ['query']),
     'icrc1_total_supply' : IDL.Func([], [IDL.Nat], ['query']),
     'icrc1_transfer' : IDL.Func([TransferArgs], [TransferResult], []),
+    'isOwner' : IDL.Func([], [IDL.Bool], []),
     'mint' : IDL.Func([Account, IDL.Nat], [TransferResult], []),
   });
 };
